@@ -17,6 +17,9 @@ venv/
 .coverage
 htmlcov/
 
+# Local, domain-specific data-prep scripts (kept out of the generic tool).
+local_prep/
+
 # Project data (candidate shapes, targets, descriptor cache)
 data/
 *.npz

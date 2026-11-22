@@ -7,9 +7,9 @@ match.
 
 The tool is **generic**: it compares one target polygon against a *directory* of
 candidate polygons and ranks them. The candidate set is just data you supply —
-the example here is countries and islands (to answer "which landmass does this
-outline most resemble?"), but any set of closed outlines works, and the set is
-swappable without touching the code.
+any set of closed outlines works, and the set is swappable without touching the
+code. How you produce the candidate polygons is up to you; the tool only ever
+reads the JSON format described below.
 
 ## How it works
 
@@ -60,8 +60,7 @@ python -m venv .venv
 ```
 
 Core runtime needs only `numpy`, `opencv-python-headless`, `pillow`, `pyefd`,
-and `scipy`. The GIS libraries used to prepare geographic candidates are a
-separate optional extra (see below).
+and `scipy`.
 
 ### Docker
 
@@ -99,8 +98,8 @@ Output is a ranked table by default:
 ```
 rank  candidate                        score  mir  aspect
 --------------------------------------------------------
-   1  ITA__0003.json                  0.9641   no    1.10
-   2  GBR__0000.json                  0.9123   no    1.00
+   1  candidate_017.json              0.9641   no    1.10
+   2  candidate_042.json              0.9123   no    1.00
    ...
 ```
 
@@ -126,21 +125,13 @@ rank  candidate                        score  mir  aspect
 
 Exit codes: `0` success, `1` no results, `2` bad/missing input.
 
-## Preparing geographic candidates (optional)
+## Producing candidate polygons
 
-`tools/prep_candidates.py` turns public-domain
-[Natural Earth](https://www.naturalearthdata.com/) vector data into the native
-JSON format — one file per landmass, exploding multi-part countries so each
-island is its own candidate. It is standalone and imports its GIS dependencies
-lazily, so the core package never requires them.
-
-```bash
-.venv/Scripts/python -m pip install -e .[prep]
-python tools/prep_candidates.py path/to/ne_10m_admin_0_countries.shp data/candidates \
-    --min-area-km2 500
-```
-
-Then point `shape-compare` at `data/candidates`.
+The tool does not generate candidates — you supply a directory of JSON polygons
+in the format above. Produce them however suits your domain (export from a
+drawing, trace an image, dump coordinates from a dataset). Each file must contain
+exactly one closed outer ring; drop one file per candidate into a directory and
+point `shape-compare` at it.
 
 ## Project layout
 
@@ -157,9 +148,7 @@ src/shapematch/
   parallel.py      # ParallelExecutor (multiprocessing; workers=1 = serial)
   cache.py         # DescriptorCache (.npz keyed by file + params hash)
   cli.py           # argparse entry point
-tools/
-  prep_candidates.py   # optional Natural Earth -> JSON helper
-tests/                 # pytest; fully synthetic fixtures, no external data
+tests/             # pytest; fully synthetic fixtures, no external data
 ```
 
 ## Development
