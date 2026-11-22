@@ -3,10 +3,11 @@
 # Stage 1 installs the package (and its runtime deps) into an isolated venv.
 # Stage 2 copies only that venv into a slim runtime and runs as a non-root user.
 # opencv-python-headless pulls no GUI libraries, so the runtime stays small.
+#
+# The base tag is a literal (not an ARG) so Dependabot's docker ecosystem can
+# track and bump it.
 
-ARG PYTHON_VERSION=3.14
-
-FROM python:${PYTHON_VERSION}-slim AS builder
+FROM python:3.14-slim AS builder
 
 ENV PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -25,7 +26,7 @@ COPY src ./src
 RUN pip install --upgrade pip && pip install .
 
 
-FROM python:${PYTHON_VERSION}-slim AS runtime
+FROM python:3.14-slim AS runtime
 
 ENV VENV=/opt/venv \
     PATH="/opt/venv/bin:$PATH" \
