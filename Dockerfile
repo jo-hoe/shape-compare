@@ -7,7 +7,7 @@
 # The base tag is a literal (not an ARG) so Dependabot's docker ecosystem can
 # track and bump it.
 
-FROM python:3.14-slim AS builder
+FROM python:3.15-slim AS builder
 
 ENV PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -26,7 +26,7 @@ COPY src ./src
 RUN pip install --upgrade pip && pip install .
 
 
-FROM python:3.14-slim AS runtime
+FROM python:3.15-slim AS runtime
 
 ENV VENV=/opt/venv \
     PATH="/opt/venv/bin:$PATH" \
