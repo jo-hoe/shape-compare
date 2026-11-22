@@ -1,0 +1,34 @@
+# .dockerignore keeps the build context tiny and prevents local data/artifacts
+# (personal inputs, caches, venvs) from ever entering an image layer.
+.git
+.github
+.venv
+venv
+data
+*.npz
+
+__pycache__
+*.py[cod]
+*.egg-info
+.eggs
+build
+dist
+
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+htmlcov
+
+# Never bake images into a layer.
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tif
+*.tiff
+*.webp
+*.heic
+
+tests

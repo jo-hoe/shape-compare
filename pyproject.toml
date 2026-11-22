@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shape-compare"
+version = "0.1.0"
+description = "Match a target silhouette against a directory of candidate shapes, invariant to scale/rotation and tolerant to moderate stretch."
+readme = "README.md"
+requires-python = ">=3.14"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "shape-compare" }]
+dependencies = [
+    "numpy>=2.5.5",
+    "opencv-python-headless>=5.1.0.95",
+    "pillow>=13.0.0",
+    "pyefd>=1.8.0",
+    "scipy>=1.18.1",
+]
+
+[project.optional-dependencies]
+prep = [
+    "geopandas>=1.2.0",
+    "shapely>=2.2.0",
+    "rasterio>=1.5.2",
+]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+    "hypothesis>=6.170.17",
+    "ruff>=0.17.6",
+    "mypy>=2.4.1",
+]
+
+[project.scripts]
+shape-compare = "shapematch.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+src = ["src", "tests", "tools"]
+
+[tool.ruff.lint]
+# pycodestyle, pyflakes, isort, bugbear, comprehensions, mccabe complexity, pep8-naming, pyupgrade
+select = ["E", "F", "I", "B", "C4", "C90", "N", "UP"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 8
+
+[tool.ruff.lint.pylint]
+max-args = 6
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+packages = ["shapematch"]
+mypy_path = "src"
+# OpenCV / pyefd ship without complete type stubs.
+[[tool.mypy.overrides]]
+module = ["cv2.*", "pyefd.*", "scipy.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=shapematch --cov-report=term-missing --cov-fail-under=90"

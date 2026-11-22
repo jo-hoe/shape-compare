@@ -1,0 +1,25 @@
+# docker compose run --rm shape-compare data/targets/outline.json data/candidates --top-k 5
+#
+# The service wraps the CLI image. Your local ./data is mounted at /work/data so
+# the container can read targets/candidates and write the cache, without any
+# input ever being baked into the image.
+
+services:
+  shape-compare:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: shape-compare:latest
+    # Override the default --help with your own arguments, e.g.:
+    #   docker compose run --rm shape-compare \
+    #     data/targets/outline.json data/candidates --top-k 5
+    volumes:
+      - ./data:/work/data
+    # Drop privileges and harden the container.
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
